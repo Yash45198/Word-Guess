@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Word/Sentence Guess Game</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
+    <h1 class="text-2xl font-bold mb-4 text-center">Guess Game</h1>
+    <p class="mb-4 text-center">Guess the correct word or sentence in 3 tries!</p>
+
+    <input type="text" id="guessInput" class="border border-gray-300 p-2 w-full mb-4 rounded"
+      placeholder="Enter your guess here" />
+    <button id="submitBtn" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded w-full">
+      Submit Guess
+    </button>
+
+    <div id="message" class="mt-4 text-center text-lg"></div>
+    <div id="attempts" class="mt-2 text-center text-sm text-gray-600"></div>
+
+    <!-- Reset button added -->
+    <button id="resetBtn" class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded w-full mt-4">
+      Reset Game
+    </button>
+  </div>
+
+  <script>
+    // Set the target sentence (or word) - use lower case for consistency.
+    const target = "again!";
+    let attempts = 0;
+    const maxAttempts = 3;
+
+    // Get elements
+    const guessInput = document.getElementById('guessInput');
+    const submitBtn = document.getElementById('submitBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const messageDiv = document.getElementById('message');
+    const attemptsDiv = document.getElementById('attempts');
+
+    // Update the attempt count display
+    function updateAttempts() {
+      attemptsDiv.textContent = `Attempt ${attempts} of ${maxAttempts}`;
+    }
+    updateAttempts();
+
+    // Handle guess submissions
+    submitBtn.addEventListener('click', function () {
+      if (attempts >= maxAttempts) return;
+
+      const userGuess = guessInput.value.trim().toLowerCase();
+      attempts++;
+      updateAttempts();
+
+      if (userGuess === target) {
+        messageDiv.textContent = "🎉 You win!";
+        messageDiv.classList.add("text-green-600");
+        guessInput.disabled = true;
+        submitBtn.disabled = true;
+      } else {
+        if (attempts >= maxAttempts) {
+          messageDiv.textContent = "❌ You reached the guess limit. Game over!";
+          messageDiv.classList.add("text-red-600");
+          guessInput.disabled = true;
+          submitBtn.disabled = true;
+        } else {
+          messageDiv.textContent = "Incorrect guess, try again!";
+          messageDiv.classList.remove("text-green-600", "text-red-600");
+        }
+      }
+      guessInput.value = "";
+      guessInput.focus();
+    });
+
+    // Allow pressing "Enter" to submit the guess.
+    guessInput.addEventListener('keyup', function (event) {
+      if (event.key === "Enter") {
+        submitBtn.click();
+      }
+    });
+
+    // Reset button event to restart the game without reloading the page
+    resetBtn.addEventListener('click', function () {
+      attempts = 0;
+      updateAttempts();
+      messageDiv.textContent = "";
+      messageDiv.classList.remove("text-green-600", "text-red-600");
+      guessInput.value = "";
+      guessInput.disabled = false;
+      submitBtn.disabled = false;
+      guessInput.focus();
+    });
+  </script>
+</body>
+
+</html>
